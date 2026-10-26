@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model frais_deplacement {
+  id                Int             @id @default(autoincrement())
+  intervention_id   Int
+  type_frais        String          @db.VarChar(30)
+  montant           Decimal         @db.Decimal(10, 2)
+  devise            String?         @default("MAD") @db.VarChar(10)
+  date_frais        DateTime        @db.Date
+  description       String?
+  statut_validation String?         @default("EN_ATTENTE") @db.VarChar(20)
+  created_at        DateTime?       @default(now()) @db.Timestamp(6)
+  interventions     interventions   @relation(fields: [intervention_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  justificatifs     justificatifs[]
+  validations       validations[]
+}
+
+model gestionnaires {
+  id          Int           @id @default(autoincrement())
+  user_id     Int           @unique
+  departement String?       @db.VarChar(100)
+  users       users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  validations validations[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model interventions {
+  id                Int                 @id @default(autoincrement())
+  technicien_id     Int
+  titre             String              @db.VarChar(150)
+  description       String?
+  lieu_depart       String              @db.VarChar(150)
+  lieu_arrivee      String              @db.VarChar(150)
+  date_depart       DateTime            @db.Timestamp(6)
+  date_retour       DateTime?           @db.Timestamp(6)
+  distance_km       Decimal?            @db.Decimal(10, 2)
+  statut            String?             @default("PLANIFIEE") @db.VarChar(20)
+  created_at        DateTime?           @default(now()) @db.Timestamp(6)
+  frais_deplacement frais_deplacement[]
+  techniciens       techniciens         @relation(fields: [technicien_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model justificatifs {
+  id                Int               @id @default(autoincrement())
+  frais_id          Int
+  nom_fichier       String            @db.VarChar(255)
+  chemin_fichier    String
+  type_fichier      String?           @db.VarChar(50)
+  taille            Int?
+  uploaded_at       DateTime?         @default(now()) @db.Timestamp(6)
+  frais_deplacement frais_deplacement @relation(fields: [frais_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model notifications {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  message    String
+  lu         Boolean?  @default(false)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model techniciens {
+  id            Int             @id @default(autoincrement())
+  user_id       Int             @unique
+  matricule     String          @unique @db.VarChar(50)
+  telephone     String?         @db.VarChar(20)
+  service       String?         @db.VarChar(100)
+  ville         String?         @db.VarChar(100)
+  interventions interventions[]
+  users         users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id            Int             @id @default(autoincrement())
+  nom           String          @db.VarChar(100)
+  prenom        String          @db.VarChar(100)
+  email         String          @unique @db.VarChar(150)
+  mot_de_passe  String
+  role          String          @db.VarChar(20)
+  actif         Boolean?        @default(true)
+  created_at    DateTime?       @default(now()) @db.Timestamp(6)
+  gestionnaires gestionnaires?
+  notifications notifications[]
+  techniciens   techniciens?
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model validations {
+  id                Int               @id @default(autoincrement())
+  frais_id          Int
+  gestionnaire_id   Int
+  decision          String            @db.VarChar(20)
+  commentaire       String?
+  date_decision     DateTime?         @default(now()) @db.Timestamp(6)
+  frais_deplacement frais_deplacement @relation(fields: [frais_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  gestionnaires     gestionnaires     @relation(fields: [gestionnaire_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// Demandes de frais soumises par un technicien (module REST /expenses).
+model Expense {
+  id          Int      @id @default(autoincrement())
+  type        String   @db.VarChar(100)
+  amount      Float
+  date        DateTime
+  description String   @db.VarChar(1000)
+  status      String   @default("pending") @db.VarChar(20)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([type])
+  @@index([date])
+  @@map("expenses")
+}

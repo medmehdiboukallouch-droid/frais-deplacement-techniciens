@@ -35,7 +35,7 @@ export default function TechnicianLogin() {
         method: 'POST',
         body: {
           email,
-          mot_de_passe: password,
+          password,
         },
       })
 

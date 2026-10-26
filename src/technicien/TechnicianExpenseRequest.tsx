@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { toast } from 'sonner'
 import { apiFetch, ApiError, API_BASE_URL } from '../lib/api'
 import { getTechnicianToken } from './technicianSession'
+import { EXPENSE_TYPE_OPTIONS } from '../constants/expenseTypes'
 
 interface ApiExpense {
   id: number
@@ -38,14 +39,6 @@ function readFileAsDataUrl(file: File): Promise<string> {
     reader.readAsDataURL(file)
   })
 }
-
-const expenseTypes = [
-  { value: 'transport', label: 'Transport' },
-  { value: 'repas', label: 'Repas' },
-  { value: 'materiel', label: 'Matériel' },
-  { value: 'hebergement', label: 'Hébergement' },
-  { value: 'autre', label: 'Autre' },
-]
 
 function getStatusBadge(statut: string) {
   switch (statut) {
@@ -234,7 +227,7 @@ export default function TechnicianExpenseRequest() {
                   <SelectValue placeholder="Sélectionnez un type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {expenseTypes.map((type) => (
+                  {EXPENSE_TYPE_OPTIONS.map((type) => (
                     <SelectItem key={type.value} value={type.value} className="text-lg py-3">
                       {type.label}
                     </SelectItem>

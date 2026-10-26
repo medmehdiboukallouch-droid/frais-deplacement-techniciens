@@ -24,7 +24,13 @@ const app = express()
 // On augmente la limite : les justificatifs (images/PDF) sont envoyés en
 // base64 dans le corps JSON, ce qui gonfle la taille (~+33%).
 app.use(express.json({ limit: '15mb' }))
-app.use(cors())
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://frais-deplacement-techniciens-deplo.vercel.app',
+  ],
+  credentials: true,
+}))
 // Les fichiers téléversés sont servis en statique sous /uploads/...
 app.use('/uploads', express.static(UPLOADS_DIR))
 app.use((req, _res, next) => {
@@ -70,13 +76,20 @@ function generateTemporaryPassword() {
   return `Temp-${crypto.randomBytes(4).toString('hex')}`
 }
 
-const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'gestion_frais',
-  password: process.env.DB_PASSWORD || '',
-  port: Number(process.env.DB_PORT) || 5432,
-})
+const pool = process.env.DATABASE_URL
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    })
+  : new Pool({
+      user: process.env.DB_USER || 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      database: process.env.DB_NAME || 'gestion_frais',
+      password: process.env.DB_PASSWORD || '',
+      port: Number(process.env.DB_PORT) || 5432,
+    })
 
 const AUTH_TABLE_CANDIDATES = ['users', 'techniciens']
 const LOGIN_COLUMN_CANDIDATES = ['email', 'mail', 'adresse_email', 'username', 'login']
@@ -644,7 +657,19 @@ async function getTechnicianOrFail(userId) {
 }
 
 async function handleLogin(req, res, expectedRole) {
-  const { email, mot_de_passe } = req.body
+  const emailRaw = req.body?.email
+  const email =
+    emailRaw == null || emailRaw === '' ? '' : String(emailRaw).trim()
+  const mot_de_passe =
+    typeof req.body?.password === 'string'
+      ? req.body.password
+      : typeof req.body?.mot_de_passe === 'string'
+        ? req.body.mot_de_passe
+        : req.body?.password != null
+          ? String(req.body.password)
+          : req.body?.mot_de_passe != null
+            ? String(req.body.mot_de_passe)
+            : ''
 
   if (!email || !mot_de_passe) {
     return res.status(400).json({ message: 'Champs requis manquants' })
@@ -2805,6 +2830,7 @@ ensureAuthConfig()
   })
   .catch((error) => console.error('Erreur lors de la detection du schema auth :', error))
 
-app.listen(3000, () => {
-  console.log('Serveur lance sur http://localhost:3000')
+const PORT = Number(process.env.PORT) || 3000
+app.listen(PORT, () => {
+  console.log(`Serveur lance sur le port ${PORT}`)
 })

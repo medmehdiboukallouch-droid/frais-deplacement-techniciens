@@ -1,7 +1,20 @@
 const DEFAULT_API_URL = 'http://localhost:3000'
 
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || DEFAULT_API_URL
+/** 
+ * Dev : préférer la même origine que Vite (proxy vers Express) pour éviter CORS / corps vidé selon environnement.
+ * Production : défaut localhost:3000 ou VITE_API_URL explicite.
+ */
+function resolvedApiBase(): string {
+  const raw = import.meta.env.VITE_API_URL
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (t.length > 0) return t.replace(/\/+$/, '')
+  }
+  if (import.meta.env.DEV) return ''
+  return DEFAULT_API_URL
+}
+
+export const API_BASE_URL = resolvedApiBase()
 
 export class ApiError extends Error {
   status: number
@@ -28,13 +41,23 @@ export async function apiFetch<T>(
   }
 
   let body = options.body
-  if (body && !(body instanceof FormData) && typeof body === 'object') {
-    headers.set('Content-Type', 'application/json')
-    body = JSON.stringify(body)
+  if (body && !(body instanceof FormData)) {
+    if (typeof body === 'object') {
+      if (!headers.has('Content-Type')) {
+        headers.set('Content-Type', 'application/json; charset=UTF-8')
+      }
+      body = JSON.stringify(body)
+    }
+    /** Chaîne JSON déjà préparée (ex. login) — Express exige explicitement ce Content-Type sinon req.body peut rester {} */
+    if (typeof body === 'string' && !headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json; charset=UTF-8')
+    }
   }
 
+  const { headers: _, body: __, token: ___, ...fetchInit } = options
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
+    ...fetchInit,
     headers,
     body,
   })
