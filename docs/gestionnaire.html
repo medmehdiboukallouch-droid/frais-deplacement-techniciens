@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Espace Gestionnaire — Documentation technique</title>
+<style>
+  pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/*!
+  Theme: GitHub
+  Description: Light theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-light
+  Current colors taken from GitHub's CSS
+*/
+.hljs {
+  color: #24292e;
+  background: #ffffff
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #d73a49
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #6f42c1
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #005cc5
+}
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #032f62
+}
+.hljs-built_in,
+.hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #e36209
+}
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  /* prettylights-syntax-comment */
+  color: #6a737d
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #22863a
+}
+.hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #24292e
+}
+.hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #005cc5;
+  font-weight: bold
+}
+.hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #735c0f
+}
+.hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #24292e;
+  font-style: italic
+}
+.hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #24292e;
+  font-weight: bold
+}
+.hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #22863a;
+  background-color: #f0fff4
+}
+.hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #b31d28;
+  background-color: #ffeef0
+}
+.hljs-char.escape_,
+.hljs-link,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
+}
+
+  :root {
+    --green: #15803d; --green-dark: #166534; --ink: #1f2937;
+    --muted: #6b7280; --border: #e5e7eb; --code-bg: #f6f8fa;
+  }
+  * { box-sizing: border-box; }
+  @page { size: A4; margin: 0; }            /* les marges réelles sont gérées par Puppeteer */
+
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink); line-height: 1.55; font-size: 10.5pt; margin: 0;
+  }
+
+  /* ---- Page de garde ---- */
+  .cover {
+    min-height: 235mm; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    page-break-after: always; text-align: center;
+  }
+  .cover .badge { background: var(--green); color: #fff; border-radius: 999px;
+    padding: 6px 18px; font-size: 11pt; letter-spacing: .5px; margin-bottom: 28px; }
+  .cover h1 { font-size: 30pt; color: var(--green-dark); margin: 0 0 14px; border: none; padding: 0; }
+  .cover .sub { font-size: 14pt; color: var(--muted); margin-bottom: 40px; }
+  .cover .meta { font-size: 10.5pt; color: var(--muted); }
+  .cover .rule { width: 80px; height: 4px; background: var(--green); margin: 18px 0; border-radius: 2px; }
+
+  /* ---- Table des matières (le numéro est déjà dans le texte du titre) ---- */
+  nav.toc ol { list-style: none; margin: 0; padding: 0; }
+  nav.toc li { margin: 8px 0; font-size: 11.5pt; padding-left: 4px; }
+  nav.toc a { color: var(--ink); border-bottom: 1px dotted var(--border); padding-bottom: 1px; }
+
+  /* ---- Titres ---- */
+  h1 { color: var(--green-dark); font-size: 19pt; border-bottom: 3px solid var(--green);
+    padding-bottom: 6px; margin: 0 0 16px; page-break-before: always; }
+  h2 { color: var(--green-dark); font-size: 14pt; margin: 22px 0 10px;
+    border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+  h3 { color: var(--ink); font-size: 12pt; margin: 16px 0 8px; }
+  h1, h2, h3 { page-break-after: avoid; }
+  /* l'ancre d'en-tête de markdown-it-anchor ne doit pas s'afficher */
+  .header-anchor { display: none; }
+
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 22px; }
+  li { margin: 3px 0; }
+  strong { color: #111827; }
+  a { color: var(--green-dark); text-decoration: none; }
+
+  /* ---- Code ---- */
+  code { font-family: "Cascadia Code", "Consolas", monospace; font-size: 9pt;
+    background: var(--code-bg); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border); }
+  pre.hljs, pre { background: var(--code-bg); border: 1px solid var(--border);
+    border-left: 4px solid var(--green); border-radius: 6px; padding: 10px 12px;
+    overflow-x: auto; page-break-inside: avoid; margin: 10px 0; }
+  pre code { background: none; border: none; padding: 0; font-size: 8.6pt; line-height: 1.45;
+    white-space: pre-wrap; word-break: break-word; }
+
+  /* ---- Tableaux ---- */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 9.2pt; page-break-inside: avoid; }
+  th, td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #f0fdf4; color: var(--green-dark); }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  /* ---- Encadrés ---- */
+  blockquote { margin: 12px 0; padding: 10px 14px; background: #f0fdf4; border-left: 4px solid var(--green);
+    border-radius: 0 6px 6px 0; color: #14532d; page-break-inside: avoid; }
+  blockquote p { margin: 4px 0; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+</style>
+</head>
+<body>
+  <section class="cover">
+    <span class="badge">DOCUMENTATION TECHNIQUE</span>
+    <h1>Espace Gestionnaire</h1>
+    <div class="rule"></div>
+    <div class="sub">Application de gestion d'interventions, missions &amp; frais de déplacement</div>
+    <div class="meta">
+      Backend (Express / PostgreSQL) · Routes API · Frontend (React)<br>
+      Projet <strong>frais-deplacement-techniciens</strong> — 10 juin 2026
+    </div>
+  </section>
+  <h1 id="espace-gestionnaire-documentation-technique-complete">Espace Gestionnaire — Documentation technique complète</h1>
+<h3 id="application-de-gestion-d-interventions-missions-et-frais-de-deplacement">Application de gestion d'interventions, missions et frais de déplacement</h3>
+<blockquote>
+<p>Ce document explique <strong>de zéro</strong> toute la partie « Gestionnaire » du projet : la base de données, le backend (toutes les routes API et leurs règles de sécurité) et le frontend (chaque composant React). L'objectif est que tu comprennes le fonctionnement dans le détail <strong>et</strong> que tu sois capable de le refaire toi-même.</p>
+</blockquote>
+<hr>
+<h2 id="table-des-matieres">Table des matières</h2>
+<nav class="toc"><ol><li><a href="#1-introduction-architecture-generale">1. Introduction &amp; architecture générale</a></li><li><a href="#2-la-base-de-donnees-vue-par-le-gestionnaire">2. La base de données vue par le gestionnaire</a></li><li><a href="#3-authentification-securite-par-role">3. Authentification &amp; sécurité par rôle</a></li><li><a href="#4-le-backend-panorama-des-routes">4. Le backend : panorama des routes</a></li><li><a href="#5-le-backend-en-detail-route-par-route">5. Le backend en détail (route par route)</a></li><li><a href="#6-le-frontend-fondations">6. Le frontend : fondations</a></li><li><a href="#7-le-frontend-les-pages-du-gestionnaire">7. Le frontend : les pages du gestionnaire</a></li><li><a href="#8-trois-scenarios-de-bout-en-bout">8. Trois scénarios de bout en bout</a></li><li><a href="#9-les-patterns-a-reutiliser-pour-coder-toi-meme">9. Les patterns à réutiliser pour coder toi-même</a></li></ol></nav>
+<hr>
+<h1 id="1-introduction-architecture-generale">1. Introduction &amp; architecture générale</h1>
+<h2 id="1-1-la-stack-technique">1.1 La stack technique</h2>
+<table>
+<thead>
+<tr>
+<th>Couche</th>
+<th>Technologies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Frontend</strong></td>
+<td>React 19, Vite, TypeScript, Tailwind CSS 4, Radix UI, react-router-dom 7, react-dnd (glisser-déposer), sonner (notifications)</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>Node.js, Express 5, un <strong>seul fichier</strong> <code>server.js</code></td>
+</tr>
+<tr>
+<td><strong>Base de données</strong></td>
+<td>PostgreSQL (via le driver <code>pg</code>)</td>
+</tr>
+<tr>
+<td><strong>Sécurité</strong></td>
+<td><code>bcrypt</code> (hachage des mots de passe), <code>jsonwebtoken</code> (JWT)</td>
+</tr>
+</tbody>
+</table>
+<p>Point important : <strong>le vrai backend est le fichier <code>server.js</code></strong> à la racine (≈ 2800 lignes). Les dossiers <code>backend/</code> (vide) et <code>_backendzip/</code> (ancienne version) <strong>ne sont pas utilisés</strong>.</p>
+<h2 id="1-2-le-schema-global">1.2 Le schéma global</h2>
+<p>L'application est découpée en deux « espaces » indépendants : <strong>Technicien</strong> et <strong>Gestionnaire</strong>. Ce document traite l'espace <strong>Gestionnaire</strong>.</p>
+<pre class="hljs"><code>┌───────────────────────────┐         HTTP + JWT          ┌──────────────────────┐        SQL        ┌──────────────┐
+│   NAVIGATEUR (React/Vite)  │  ───────────────────────▶   │   server.js (Express)│  ──────────────▶  │  PostgreSQL  │
+│  Espace Gestionnaire       │                             │   Routes /api/...    │                   │ gestion_frais│
+│  (port 5173 en dev)        │  ◀───────────────────────   │   (port 3000)        │  ◀──────────────  │              │
+└───────────────────────────┘     JSON (réponse)          └──────────────────────┘     lignes        └──────────────┘
+</code></pre>
+<ul>
+<li>Le <strong>navigateur</strong> affiche l'interface et n'a jamais accès direct à la base.</li>
+<li>Le <strong>serveur Express</strong> expose une API REST en <code>/api/...</code>, applique les <strong>règles de sécurité</strong> et parle à PostgreSQL.</li>
+<li>Chaque requête « privée » transporte un <strong>jeton JWT</strong> dans l'en-tête <code>Authorization: Bearer &lt;token&gt;</code> ; le serveur le vérifie et en déduit le rôle de l'utilisateur.</li>
+</ul>
+<h2 id="1-3-un-mot-de-vocabulaire">1.3 Un mot de vocabulaire</h2>
+<p>Dans cette application, <strong>une « mission » est une <code>intervention</code></strong>. Les requêtes SQL renvoient d'ailleurs <code>i.titre AS mission</code>. Il n'y a pas de table <code>missions</code> séparée. Garde ça en tête : quand l'interface dit « mission », la base parle d'<code>intervention</code>.</p>
+<h2 id="1-4-le-cycle-de-vie-d-une-requete-authentifiee">1.4 Le cycle de vie d'une requête authentifiée</h2>
+<p>C'est LE concept central. Voici ce qui se passe quand le gestionnaire clique sur « Matériaux » :</p>
+<ol>
+<li>Le composant React appelle <code>apiFetch('/api/materiaux', { token })</code>.</li>
+<li><code>apiFetch</code> ajoute l'en-tête <code>Authorization: Bearer &lt;token&gt;</code> et envoie la requête au serveur.</li>
+<li>Express fait passer la requête par le <strong>middleware</strong> <code>requireRole('GESTIONNAIRE')</code>.</li>
+<li>Le middleware décode le JWT, retrouve l'utilisateur en base, vérifie qu'il a bien le rôle <code>GESTIONNAIRE</code>. Sinon il répond <code>401</code> (non connecté) ou <code>403</code> (mauvais rôle).</li>
+<li>Si tout est bon, le <strong>handler</strong> de la route exécute la requête SQL et renvoie du JSON.</li>
+<li><code>apiFetch</code> lit le JSON et le rend au composant, qui met à jour l'affichage.</li>
+</ol>
+<hr>
+<h1 id="2-la-base-de-donnees-vue-par-le-gestionnaire">2. La base de données vue par le gestionnaire</h1>
+<p>Le gestionnaire manipule (directement ou indirectement) presque toutes les tables. Voici celles qui le concernent.</p>
+<h2 id="2-1-les-tables-et-leurs-roles">2.1 Les tables et leurs rôles</h2>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Rôle</th>
+<th>Qui écrit ?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>users</code></td>
+<td>Compte de connexion : <code>nom</code>, <code>prenom</code>, <code>email</code>, <code>mot_de_passe</code> (haché), <code>role</code>, <code>actif</code></td>
+<td>Gestionnaire</td>
+</tr>
+<tr>
+<td><code>techniciens</code></td>
+<td>Profil métier d'un technicien (<code>matricule</code>, <code>telephone</code>, <code>service</code>, <code>ville</code>), relié à <code>users</code></td>
+<td>Gestionnaire</td>
+</tr>
+<tr>
+<td><code>gestionnaires</code></td>
+<td>Profil d'un gestionnaire (<code>departement</code>), relié à <code>users</code></td>
+<td>Gestionnaire</td>
+</tr>
+<tr>
+<td><code>projets</code></td>
+<td>Projets/chantiers (<code>nom</code>, <code>client</code>, <code>localisation</code>, <code>statut</code>)</td>
+<td>Gestionnaire</td>
+</tr>
+<tr>
+<td><code>materiaux</code></td>
+<td>Catalogue de matériaux (CRUD)</td>
+<td>Gestionnaire</td>
+</tr>
+<tr>
+<td><code>interventions</code></td>
+<td>Planning : <code>titre</code>, lieux, <code>date_depart</code> (début), <code>date_retour</code> (fin), <code>statut</code></td>
+<td>Gestionnaire</td>
+</tr>
+<tr>
+<td><code>rapports</code></td>
+<td>Rapports d'intervention remplis par le technicien</td>
+<td>Technicien (validés par le gestionnaire)</td>
+</tr>
+<tr>
+<td><code>frais_deplacement</code></td>
+<td>Notes de frais (liées à une intervention/mission, avec justificatif)</td>
+<td>Technicien (validées/payées par le gestionnaire)</td>
+</tr>
+<tr>
+<td><code>validations</code></td>
+<td>Journal d'audit des décisions (validation, paiement)</td>
+<td>Gestionnaire (automatique)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-2-les-relations-principales">2.2 Les relations principales</h2>
+<pre class="hljs"><code>users (1) ───&lt; (1) techniciens ───&lt; (N) interventions ───&lt; (N) rapports
+   │                                         │
+   │ (1)                                     └──&lt; (N) frais_deplacement ───&lt; (N) validations
+   └───&lt; (1) gestionnaires
+
+projets        materiaux        (tables « autonomes » gérées par le gestionnaire)
+</code></pre>
+<ul>
+<li>Un <code>user</code> de rôle <code>TECHNICIEN</code> possède <strong>une</strong> ligne <code>techniciens</code> ; un <code>user</code> de rôle <code>GESTIONNAIRE</code> possède <strong>une</strong> ligne <code>gestionnaires</code>. C'est le motif « table de comptes + table de profil ».</li>
+<li>Une <code>intervention</code> appartient à <strong>un</strong> technicien.</li>
+<li>Un <code>frais_deplacement</code> est rattaché à <strong>une</strong> <code>intervention</code> (= la mission) et porte un <code>justificatif_url</code>.</li>
+</ul>
+<h2 id="2-3-definition-sql-extraits-cles">2.3 Définition SQL (extraits clés)</h2>
+<pre class="hljs"><code><span class="hljs-keyword">CREATE TABLE</span> users (
+  id           SERIAL <span class="hljs-keyword">PRIMARY KEY</span>,
+  nom          <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-keyword">NOT NULL</span>,
+  prenom       <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>),
+  email        <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>) <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">UNIQUE</span>,
+  mot_de_passe TEXT <span class="hljs-keyword">NOT NULL</span>,          <span class="hljs-comment">-- TOUJOURS un hash bcrypt, jamais en clair</span>
+  role         <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;TECHNICIEN&#x27;</span>,
+  actif        <span class="hljs-type">BOOLEAN</span> <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">TRUE</span>,
+  created_at   TIMESTAMPTZ <span class="hljs-keyword">DEFAULT</span> NOW()
+);
+
+<span class="hljs-keyword">CREATE TABLE</span> materiaux (
+  id             SERIAL <span class="hljs-keyword">PRIMARY KEY</span>,
+  reference      <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-keyword">UNIQUE</span>,
+  nom            <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>) <span class="hljs-keyword">NOT NULL</span>,
+  description    TEXT,
+  categorie      <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">100</span>),
+  quantite_stock <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-number">0</span>,
+  unite          <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;unité&#x27;</span>,
+  prix_unitaire  <span class="hljs-type">NUMERIC</span>(<span class="hljs-number">10</span>,<span class="hljs-number">2</span>),
+  actif          <span class="hljs-type">BOOLEAN</span> <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">TRUE</span>,
+  created_at     TIMESTAMPTZ <span class="hljs-keyword">DEFAULT</span> NOW(),
+  updated_at     TIMESTAMPTZ <span class="hljs-keyword">DEFAULT</span> NOW()
+);
+</code></pre>
+<blockquote>
+<p>💡 <strong>Le motif « id technique »</strong> : chaque table a un <code>id SERIAL PRIMARY KEY</code> (entier auto-incrémenté). Les relations se font avec des clés étrangères <code>REFERENCES autre_table(id)</code>.</p>
+</blockquote>
+<hr>
+<h1 id="3-authentification-securite-par-role">3. Authentification &amp; sécurité par rôle</h1>
+<p>C'est la partie la plus importante à comprendre, car <strong>toutes</strong> les routes du gestionnaire en dépendent.</p>
+<h2 id="3-1-la-connexion-post-login-gestionnaire">3.1 La connexion : <code>POST /login/gestionnaire</code></h2>
+<p>Quand le gestionnaire se connecte, le frontend envoie son email + mot de passe. Le serveur :</p>
+<ol>
+<li>cherche l'utilisateur par email,</li>
+<li>compare le mot de passe fourni au <strong>hash bcrypt</strong> stocké,</li>
+<li>vérifie que le rôle est bien <code>GESTIONNAIRE</code>,</li>
+<li>génère un <strong>jeton JWT</strong> signé contenant <code>{ id, role }</code>.</li>
+</ol>
+<pre class="hljs"><code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">handleLogin</span>(<span class="hljs-params">req, res, expectedRole</span>) {
+  <span class="hljs-keyword">const</span> { email, mot_de_passe } = req.<span class="hljs-property">body</span>
+  <span class="hljs-comment">// ... recherche de l&#x27;utilisateur par email ...</span>
+  <span class="hljs-keyword">const</span> user = result.<span class="hljs-property">rows</span>[<span class="hljs-number">0</span>]
+  <span class="hljs-keyword">const</span> valid = <span class="hljs-keyword">await</span> <span class="hljs-title function_">verifyPassword</span>(mot_de_passe, user[config.<span class="hljs-property">passwordColumn</span>])
+  <span class="hljs-keyword">if</span> (!valid) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">401</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Mot de passe incorrect&#x27;</span> })
+
+  <span class="hljs-comment">// On vérifie le rôle attendu (GESTIONNAIRE pour cette route)</span>
+  <span class="hljs-keyword">if</span> (expectedRole &amp;&amp; <span class="hljs-title function_">normalizeRole</span>(user.<span class="hljs-property">role</span>) !== expectedRole) {
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">403</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Acces refuse pour ce role&#x27;</span> })
+  }
+
+  <span class="hljs-comment">// On fabrique un jeton valable 12h, signé avec une clé secrète</span>
+  <span class="hljs-keyword">const</span> token = jwt.<span class="hljs-title function_">sign</span>({ <span class="hljs-attr">id</span>: user.<span class="hljs-property">id</span>, <span class="hljs-attr">role</span>: <span class="hljs-title function_">normalizeRole</span>(user.<span class="hljs-property">role</span>) }, jwtSecret, {
+    <span class="hljs-attr">expiresIn</span>: <span class="hljs-string">&#x27;12h&#x27;</span>,
+  })
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Connexion reussie&#x27;</span>, token, <span class="hljs-attr">role</span>: <span class="hljs-title function_">normalizeRole</span>(user.<span class="hljs-property">role</span>) })
+}
+
+<span class="hljs-comment">// Trois portes d&#x27;entrée, la même fonction :</span>
+app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/login&#x27;</span>,               <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> <span class="hljs-title function_">handleLogin</span>(req, res, <span class="hljs-literal">null</span>))
+app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/login/technicien&#x27;</span>,    <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> <span class="hljs-title function_">handleLogin</span>(req, res, <span class="hljs-variable constant_">ROLE_TECHNICIEN</span>))
+app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/login/gestionnaire&#x27;</span>,  <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> <span class="hljs-title function_">handleLogin</span>(req, res, <span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>))
+</code></pre>
+<p>Le mot de passe est comparé via <code>bcrypt</code> (qui sait re-hacher et comparer sans jamais déchiffrer) :</p>
+<pre class="hljs"><code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">verifyPassword</span>(<span class="hljs-params">plainPassword, storedPassword</span>) {
+  <span class="hljs-keyword">if</span> (<span class="hljs-title function_">looksLikeBcryptHash</span>(storedPassword)) {
+    <span class="hljs-keyword">return</span> bcrypt.<span class="hljs-title function_">compare</span>(plainPassword, storedPassword)
+  }
+  <span class="hljs-keyword">return</span> plainPassword === storedPassword <span class="hljs-comment">// tolérance pour d&#x27;anciens comptes en clair</span>
+}
+</code></pre>
+<h2 id="3-2-le-jeton-jwt-en-deux-mots">3.2 Le jeton JWT, en deux mots</h2>
+<p>Un JWT est une chaîne signée de la forme <code>entête.charge_utile.signature</code>. La <strong>charge utile</strong> ici contient <code>{ id: 42, role: &quot;GESTIONNAIRE&quot; }</code>. La <strong>signature</strong> est calculée avec une clé secrète (<code>JWT_SECRET</code> dans le <code>.env</code>). Personne ne peut fabriquer un faux jeton sans connaître cette clé, et le serveur peut vérifier l'authenticité <strong>sans interroger la base</strong> (sauf qu'ici on relit l'utilisateur pour être sûr qu'il existe encore).</p>
+<h2 id="3-3-le-middleware-requirerole-role-le-videur-a-l-entree">3.3 Le middleware <code>requireRole(role)</code> — le videur à l'entrée</h2>
+<p>Chaque route privée est « protégée » par ce middleware. C'est une fonction qui <strong>renvoie</strong> une autre fonction (un <em>middleware</em> Express : <code>(req, res, next)</code>).</p>
+<pre class="hljs"><code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">authFromRequest</span>(<span class="hljs-params">req</span>) {
+  <span class="hljs-keyword">const</span> header = req.<span class="hljs-property">headers</span>.<span class="hljs-property">authorization</span>
+  <span class="hljs-keyword">if</span> (!header || !header.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&#x27;Bearer &#x27;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;Token manquant&#x27;</span>)
+
+  <span class="hljs-keyword">const</span> token = header.<span class="hljs-title function_">slice</span>(<span class="hljs-string">&#x27;Bearer &#x27;</span>.<span class="hljs-property">length</span>)
+  <span class="hljs-keyword">const</span> payload = jwt.<span class="hljs-title function_">verify</span>(token, jwtSecret)         <span class="hljs-comment">// vérifie la signature + l&#x27;expiration</span>
+
+  <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetchUserById</span>(payload.<span class="hljs-property">id</span>)         <span class="hljs-comment">// l&#x27;utilisateur existe-t-il encore ?</span>
+  <span class="hljs-keyword">if</span> (!user) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;Utilisateur introuvable&#x27;</span>)
+
+  <span class="hljs-keyword">return</span> { user, <span class="hljs-attr">role</span>: <span class="hljs-title function_">normalizeRole</span>(payload.<span class="hljs-property">role</span> || user.<span class="hljs-property">role</span>) }
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">requireRole</span>(<span class="hljs-params">role</span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">async</span> (req, res, next) =&gt; {
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">const</span> auth = <span class="hljs-keyword">await</span> <span class="hljs-title function_">authFromRequest</span>(req)
+      <span class="hljs-keyword">if</span> (role &amp;&amp; auth.<span class="hljs-property">role</span> !== role) {
+        <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">403</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Acces refuse pour ce role&#x27;</span> }) <span class="hljs-comment">// mauvais rôle</span>
+      }
+      req.<span class="hljs-property">auth</span> = auth     <span class="hljs-comment">// on attache l&#x27;utilisateur à la requête pour le handler</span>
+      <span class="hljs-title function_">next</span>()              <span class="hljs-comment">// feu vert : on passe au handler de la route</span>
+    } <span class="hljs-keyword">catch</span> (error) {
+      <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">401</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: error.<span class="hljs-property">message</span> || <span class="hljs-string">&#x27;Non autorise&#x27;</span> }) <span class="hljs-comment">// pas/plus connecté</span>
+    }
+  }
+}
+</code></pre>
+<p>À retenir :</p>
+<ul>
+<li><code>requireRole(ROLE_GESTIONNAIRE)</code> → réservé au gestionnaire.</li>
+<li><code>requireRole(ROLE_TECHNICIEN)</code> → réservé au technicien.</li>
+<li><code>requireRole(null)</code> → n'importe quel utilisateur <strong>connecté</strong> (rôle indifférent).</li>
+<li>Après le middleware, le handler dispose de <code>req.auth.user</code> (l'utilisateur courant) et <code>req.auth.role</code>.</li>
+</ul>
+<p>La différence <strong>401 vs 403</strong> est essentielle :</p>
+<ul>
+<li><strong>401 Unauthorized</strong> : « je ne sais pas qui tu es » (jeton absent, invalide ou expiré).</li>
+<li><strong>403 Forbidden</strong> : « je sais qui tu es, mais tu n'as pas le droit » (mauvais rôle).</li>
+</ul>
+<h2 id="3-4-cote-frontend-stocker-et-envoyer-le-jeton">3.4 Côté frontend : stocker et envoyer le jeton</h2>
+<p>Le jeton reçu à la connexion est rangé dans le <code>sessionStorage</code> du navigateur, puis renvoyé à chaque appel.</p>
+<pre class="hljs"><code><span class="hljs-comment">// managerSession.ts — un petit module qui isole la gestion du jeton</span>
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">MANAGER_TOKEN_KEY</span> = <span class="hljs-string">&#x27;managerToken&#x27;</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">setManagerSession</span>(<span class="hljs-params"><span class="hljs-attr">token</span>: <span class="hljs-built_in">string</span></span>) { <span class="hljs-variable language_">sessionStorage</span>.<span class="hljs-title function_">setItem</span>(<span class="hljs-variable constant_">MANAGER_TOKEN_KEY</span>, token) }
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">clearManagerSession</span>(<span class="hljs-params"></span>)             { <span class="hljs-variable language_">sessionStorage</span>.<span class="hljs-title function_">removeItem</span>(<span class="hljs-variable constant_">MANAGER_TOKEN_KEY</span>) }
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getManagerToken</span>(<span class="hljs-params"></span>): <span class="hljs-built_in">string</span> | <span class="hljs-literal">null</span>  { <span class="hljs-keyword">return</span> <span class="hljs-variable language_">sessionStorage</span>.<span class="hljs-title function_">getItem</span>(<span class="hljs-variable constant_">MANAGER_TOKEN_KEY</span>) }
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">isManagerAuthenticated</span>(<span class="hljs-params"></span>): <span class="hljs-built_in">boolean</span>  { <span class="hljs-keyword">return</span> <span class="hljs-title class_">Boolean</span>(<span class="hljs-title function_">getManagerToken</span>()) }
+</code></pre>
+<blockquote>
+<p>Le <code>sessionStorage</code> se vide à la fermeture de l'onglet : c'est volontaire (sécurité). Pour une session persistante, on utiliserait <code>localStorage</code>.</p>
+</blockquote>
+<h2 id="3-5-la-garde-de-route-requiremanagerauth">3.5 La garde de route <code>RequireManagerAuth</code></h2>
+<p>Côté React, on empêche d'afficher les pages du gestionnaire si aucun jeton n'est présent. C'est le rôle de ce minuscule composant, branché dans le routeur (voir §6).</p>
+<pre class="hljs"><code><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Navigate</span>, <span class="hljs-title class_">Outlet</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react-router-dom&#x27;</span>
+<span class="hljs-keyword">import</span> { isManagerAuthenticated } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./managerSession&#x27;</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">RequireManagerAuth</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isManagerAuthenticated</span>()) {
+    <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Navigate</span> <span class="hljs-attr">to</span>=<span class="hljs-string">&quot;/gestionnaire/login&quot;</span> <span class="hljs-attr">replace</span> /&gt;</span></span>  <span class="hljs-comment">// redirection si non connecté</span>
+  }
+  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Outlet</span> /&gt;</span></span>   <span class="hljs-comment">// sinon, on affiche la page demandée</span>
+}
+</code></pre>
+<blockquote>
+<p>⚠️ Cette garde n'est qu'une <strong>commodité d'affichage</strong>. La vraie sécurité est côté serveur (<code>requireRole</code>). On ne fait jamais confiance au frontend pour la sécurité.</p>
+</blockquote>
+<hr>
+<h1 id="4-le-backend-panorama-des-routes">4. Le backend : panorama des routes</h1>
+<p>Toutes les routes ci-dessous sont dans <code>server.js</code>. La colonne « Accès » indique le middleware appliqué.</p>
+<table>
+<thead>
+<tr>
+<th>Méthode &amp; route</th>
+<th>Accès</th>
+<th>Rôle fonctionnel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /login/gestionnaire</code></td>
+<td>public</td>
+<td>Connexion gestionnaire</td>
+</tr>
+<tr>
+<td><code>GET /api/users</code></td>
+<td>GESTIONNAIRE</td>
+<td>Liste des comptes (filtres <code>role</code>, <code>actif</code>)</td>
+</tr>
+<tr>
+<td><code>GET /api/users/:id</code></td>
+<td>GESTIONNAIRE</td>
+<td>Détail d'un compte</td>
+</tr>
+<tr>
+<td><code>POST /api/users</code></td>
+<td>GESTIONNAIRE</td>
+<td>Créer un compte (technicien ou gestionnaire)</td>
+</tr>
+<tr>
+<td><code>PUT /api/users/:id</code></td>
+<td>GESTIONNAIRE</td>
+<td>Modifier un compte</td>
+</tr>
+<tr>
+<td><code>DELETE /api/users/:id</code></td>
+<td>GESTIONNAIRE</td>
+<td>Désactiver un compte (soft delete)</td>
+</tr>
+<tr>
+<td><code>POST /api/users/:id/reset-password</code></td>
+<td>GESTIONNAIRE</td>
+<td>Réinitialiser le mot de passe</td>
+</tr>
+<tr>
+<td><code>GET/POST/PUT/DELETE /api/techniciens...</code></td>
+<td>GESTIONNAIRE</td>
+<td>CRUD techniciens (variante)</td>
+</tr>
+<tr>
+<td><code>GET/POST/PUT/DELETE /api/gestionnaires...</code></td>
+<td>GESTIONNAIRE</td>
+<td>CRUD gestionnaires</td>
+</tr>
+<tr>
+<td><code>GET /api/projets</code></td>
+<td>connecté</td>
+<td>Liste des projets (partagée)</td>
+</tr>
+<tr>
+<td><code>POST/PUT/DELETE /api/projets...</code></td>
+<td>GESTIONNAIRE</td>
+<td>CRUD projets</td>
+</tr>
+<tr>
+<td><code>GET/POST/PUT/DELETE /api/materiaux...</code></td>
+<td>GESTIONNAIRE</td>
+<td>CRUD catalogue matériaux</td>
+</tr>
+<tr>
+<td><code>GET /api/interventions</code></td>
+<td>GESTIONNAIRE</td>
+<td>Planning (filtre par semaine)</td>
+</tr>
+<tr>
+<td><code>POST/PUT/DELETE /api/interventions...</code></td>
+<td>GESTIONNAIRE</td>
+<td>CRUD interventions</td>
+</tr>
+<tr>
+<td><code>GET /api/rapports/stats</code></td>
+<td>GESTIONNAIRE</td>
+<td>Compteurs de rapports</td>
+</tr>
+<tr>
+<td><code>GET /api/rapports</code></td>
+<td>connecté</td>
+<td>Liste des rapports</td>
+</tr>
+<tr>
+<td><code>PUT /api/rapports/:id/valider</code></td>
+<td>GESTIONNAIRE</td>
+<td>Valider/rejeter un rapport</td>
+</tr>
+<tr>
+<td><code>GET /api/manager/dashboard</code></td>
+<td>GESTIONNAIRE</td>
+<td>Statistiques du tableau de bord</td>
+</tr>
+<tr>
+<td><code>GET /api/manager/expenses</code></td>
+<td>GESTIONNAIRE</td>
+<td>Liste des notes de frais (filtre statut)</td>
+</tr>
+<tr>
+<td><code>PATCH /api/manager/expenses/:id/validate</code></td>
+<td>GESTIONNAIRE</td>
+<td>Valider une note de frais</td>
+</tr>
+<tr>
+<td><code>PATCH /api/manager/expenses/pay</code></td>
+<td>GESTIONNAIRE</td>
+<td>Payer (rembourser) plusieurs frais</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-1-les-briques-communes-du-backend">4.1 Les briques communes du backend</h2>
+<p>Avant de détailler les routes, voici les fonctions utilitaires réutilisées partout.</p>
+<pre class="hljs"><code><span class="hljs-comment">// Convertit &quot;42&quot; en 42, et renvoie null si ce n&#x27;est pas un entier valide.</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">parseInteger</span>(<span class="hljs-params">value</span>) {
+  <span class="hljs-keyword">const</span> n = <span class="hljs-title class_">Number</span>.<span class="hljs-built_in">parseInt</span>(<span class="hljs-title class_">String</span>(value), <span class="hljs-number">10</span>)
+  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Number</span>.<span class="hljs-built_in">isFinite</span>(n) ? n : <span class="hljs-literal">null</span>
+}
+
+<span class="hljs-comment">// Transforme une ligne SQL (snake_case) en objet JSON (camelCase) pour le front.</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">formatMaterialRow</span>(<span class="hljs-params">row</span>) {
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">id</span>: row.<span class="hljs-property">id</span>,
+    <span class="hljs-attr">reference</span>: row.<span class="hljs-property">reference</span> || <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">nom</span>: row.<span class="hljs-property">nom</span>,
+    <span class="hljs-attr">quantiteStock</span>: <span class="hljs-title class_">Number</span>(row.<span class="hljs-property">quantite_stock</span> ?? <span class="hljs-number">0</span>),
+    <span class="hljs-attr">prixUnitaire</span>: row.<span class="hljs-property">prix_unitaire</span> !== <span class="hljs-literal">null</span> ? <span class="hljs-title class_">Number</span>(row.<span class="hljs-property">prix_unitaire</span>) : <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">actif</span>: row.<span class="hljs-property">actif</span> === <span class="hljs-literal">true</span>,
+    <span class="hljs-comment">// ...</span>
+  }
+}
+
+<span class="hljs-comment">// Exécute plusieurs requêtes dans UNE transaction (tout réussit, ou tout est annulé).</span>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">runTransaction</span>(<span class="hljs-params">work</span>) {
+  <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">connect</span>()
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;BEGIN&#x27;</span>)
+    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title function_">work</span>(client)
+    <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;COMMIT&#x27;</span>)
+    <span class="hljs-keyword">return</span> result
+  } <span class="hljs-keyword">catch</span> (error) {
+    <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;ROLLBACK&#x27;</span>)   <span class="hljs-comment">// en cas d&#x27;erreur, on annule TOUT</span>
+    <span class="hljs-keyword">throw</span> error
+  } <span class="hljs-keyword">finally</span> {
+    client.<span class="hljs-title function_">release</span>()
+  }
+}
+</code></pre>
+<p>Trois idées fondamentales s'y cachent :</p>
+<ol>
+<li><strong>Requêtes paramétrées</strong> (<code>$1</code>, <code>$2</code>, …) : on ne colle JAMAIS une valeur utilisateur directement dans le SQL → protection contre l'<strong>injection SQL</strong>.</li>
+<li><strong>Formatage des lignes</strong> : le SQL parle <code>snake_case</code>, le frontend préfère <code>camelCase</code> ; les fonctions <code>formatXxxRow</code> font le pont.</li>
+<li><strong>Transactions</strong> : quand une opération touche plusieurs tables (ex. créer un <code>user</code> + son profil <code>techniciens</code>), on les regroupe pour garantir la cohérence.</li>
+</ol>
+<hr>
+<h1 id="5-le-backend-en-detail-route-par-route">5. Le backend en détail (route par route)</h1>
+<h2 id="5-1-gestion-des-comptes-users">5.1 Gestion des comptes — <code>users</code></h2>
+<h3 id="lister-les-comptes-get-api-users">Lister les comptes — <code>GET /api/users</code></h3>
+<p>Cette route alimente la page « Ressources » et la liste des techniciens du planning. Elle accepte deux filtres en <em>query string</em> : <code>?role=TECHNICIEN</code> et <code>?actif=true</code>.</p>
+<pre class="hljs"><code>app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/api/users&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> filters = []
+  <span class="hljs-keyword">const</span> params = []
+
+  <span class="hljs-comment">// On construit dynamiquement le WHERE en fonction des filtres présents.</span>
+  <span class="hljs-keyword">const</span> role = <span class="hljs-title function_">parseRoleFilter</span>(req.<span class="hljs-property">query</span>.<span class="hljs-property">role</span>)
+  <span class="hljs-keyword">if</span> (role) { params.<span class="hljs-title function_">push</span>(role); filters.<span class="hljs-title function_">push</span>(<span class="hljs-string">`u.role = $<span class="hljs-subst">${params.length}</span>`</span>) }
+
+  <span class="hljs-keyword">const</span> actif = <span class="hljs-title function_">parseActiveFilter</span>(req.<span class="hljs-property">query</span>.<span class="hljs-property">actif</span> ?? req.<span class="hljs-property">query</span>.<span class="hljs-property">statut</span>)
+  <span class="hljs-keyword">if</span> (actif !== <span class="hljs-literal">null</span>) { params.<span class="hljs-title function_">push</span>(actif); filters.<span class="hljs-title function_">push</span>(<span class="hljs-string">`u.actif = $<span class="hljs-subst">${params.length}</span>`</span>) }
+
+  <span class="hljs-keyword">const</span> whereClause = filters.<span class="hljs-property">length</span> ? <span class="hljs-string">`WHERE <span class="hljs-subst">${filters.join(<span class="hljs-string">&#x27; AND &#x27;</span>)}</span>`</span> : <span class="hljs-string">&#x27;&#x27;</span>
+
+  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">`
+    SELECT u.id, u.nom, u.prenom, u.email, u.role, u.actif, u.created_at,
+           t.id AS technicien_id, t.matricule, t.telephone, t.service, t.ville,
+           g.id AS gestionnaire_id, g.departement
+    FROM users u
+    LEFT JOIN techniciens t    ON t.user_id = u.id
+    LEFT JOIN gestionnaires g  ON g.user_id = u.id
+    <span class="hljs-subst">${whereClause}</span>
+    ORDER BY u.created_at DESC, u.id DESC
+  `</span>, params)
+
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">count</span>: result.<span class="hljs-property">rows</span>.<span class="hljs-property">length</span>, <span class="hljs-attr">users</span>: result.<span class="hljs-property">rows</span>.<span class="hljs-title function_">map</span>(formatUserRow) })
+})
+</code></pre>
+<p>Deux techniques à retenir :</p>
+<ul>
+<li><strong>WHERE dynamique</strong> : on n'ajoute une condition que si le filtre est fourni, en synchronisant <code>params</code> et le numéro <code>$N</code>.</li>
+<li><strong><code>LEFT JOIN</code></strong> : on rapatrie en une requête le compte ET son profil (technicien ou gestionnaire), même si le profil n'existe pas.</li>
+</ul>
+<h3 id="creer-un-compte-post-api-users">Créer un compte — <code>POST /api/users</code></h3>
+<p>Création atomique : on insère dans <code>users</code> <strong>puis</strong> dans <code>techniciens</code> (ou <code>gestionnaires</code>) selon le rôle, le tout dans une transaction. Le mot de passe est <strong>haché</strong> avant insertion.</p>
+<pre class="hljs"><code>app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/api/users&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> { nom, email } = req.<span class="hljs-property">body</span>
+  <span class="hljs-keyword">const</span> password = req.<span class="hljs-property">body</span>.<span class="hljs-property">password</span> ?? req.<span class="hljs-property">body</span>.<span class="hljs-property">mot_de_passe</span>
+  <span class="hljs-keyword">const</span> role = <span class="hljs-title function_">parseRoleFilter</span>(req.<span class="hljs-property">body</span>.<span class="hljs-property">role</span>) || <span class="hljs-variable constant_">ROLE_TECHNICIEN</span>
+  <span class="hljs-keyword">if</span> (!nom || !email || !password) {
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;nom, email et password sont obligatoires&#x27;</span> })
+  }
+
+  <span class="hljs-comment">// Email déjà pris ?</span>
+  <span class="hljs-keyword">const</span> existing = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT id FROM users WHERE email = $1 LIMIT 1&#x27;</span>, [email])
+  <span class="hljs-keyword">if</span> (existing.<span class="hljs-property">rows</span>.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">409</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Cet email existe déjà&#x27;</span> })
+
+  <span class="hljs-keyword">const</span> hashedPassword = <span class="hljs-keyword">await</span> bcrypt.<span class="hljs-title function_">hash</span>(password, <span class="hljs-number">10</span>)   <span class="hljs-comment">// 10 = coût du hachage</span>
+
+  <span class="hljs-keyword">const</span> createdUser = <span class="hljs-keyword">await</span> <span class="hljs-title function_">runTransaction</span>(<span class="hljs-title function_">async</span> (client) =&gt; {
+    <span class="hljs-keyword">const</span> userInsert = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">query</span>(
+      <span class="hljs-string">`INSERT INTO users (nom, prenom, email, mot_de_passe, role, actif)
+       VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`</span>,
+      [nom, prenom, email, hashedPassword, role, actif],
+    )
+    <span class="hljs-keyword">const</span> userId = userInsert.<span class="hljs-property">rows</span>[<span class="hljs-number">0</span>].<span class="hljs-property">id</span>
+    <span class="hljs-keyword">if</span> (role === <span class="hljs-variable constant_">ROLE_TECHNICIEN</span>)   <span class="hljs-keyword">await</span> <span class="hljs-title function_">syncTechnicianProfile</span>(client, userId, { <span class="hljs-comment">/* matricule... */</span> })
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (role === <span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>) <span class="hljs-keyword">await</span> <span class="hljs-title function_">syncManagerProfile</span>(client, userId, { <span class="hljs-comment">/* departement */</span> })
+    <span class="hljs-keyword">return</span> { <span class="hljs-attr">id</span>: userId }
+  })
+
+  <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetchUserDetailsById</span>(createdUser.<span class="hljs-property">id</span>)
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">201</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">user</span>: <span class="hljs-title function_">formatUserRow</span>(user) })
+})
+</code></pre>
+<p>Codes de statut utilisés : <code>400</code> (champ manquant), <code>409</code> (conflit : email déjà pris), <code>201</code> (créé).</p>
+<h3 id="modifier-un-compte-put-api-users-id-avec-une-regle-de-securite">Modifier un compte — <code>PUT /api/users/:id</code> (avec une règle de sécurité)</h3>
+<p>La modification suit le même schéma, <strong>mais</strong> elle applique une règle métier importante : <strong>un gestionnaire ne peut pas changer le mot de passe d'un technicien</strong>.</p>
+<pre class="hljs"><code><span class="hljs-comment">// Règle : le gestionnaire NE PEUT PAS changer le mot de passe d&#x27;un technicien.</span>
+<span class="hljs-keyword">if</span> (password &amp;&amp; <span class="hljs-title function_">normalizeRole</span>(existingUser.<span class="hljs-property">role</span>) === <span class="hljs-variable constant_">ROLE_TECHNICIEN</span>) {
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">403</span>).<span class="hljs-title function_">json</span>({
+    <span class="hljs-attr">error</span>: <span class="hljs-string">&quot;Le gestionnaire ne peut pas changer le mot de passe d&#x27;un technicien. Utilisez la réinitialisation.&quot;</span>,
+  })
+}
+</code></pre>
+<h3 id="supprimer-un-compte-delete-api-users-id-soft-delete">Supprimer un compte — <code>DELETE /api/users/:id</code> (soft delete)</h3>
+<p>On ne <strong>supprime</strong> pas réellement la ligne (cela casserait les interventions/frais liés). On la <strong>désactive</strong> : <code>actif = false</code>. C'est un <em>soft delete</em>.</p>
+<pre class="hljs"><code>app.<span class="hljs-title function_">delete</span>(<span class="hljs-string">&#x27;/api/users/:id&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE users SET actif = false WHERE id = $1 RETURNING id&#x27;</span>, [userId])
+  <span class="hljs-keyword">if</span> (!result.<span class="hljs-property">rows</span>.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">404</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Utilisateur introuvable&#x27;</span> })
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Utilisateur désactivé&#x27;</span> })
+})
+</code></pre>
+<h3 id="reinitialiser-le-mot-de-passe-post-api-users-id-reset-password">Réinitialiser le mot de passe — <code>POST /api/users/:id/reset-password</code></h3>
+<p>Le gestionnaire ne <strong>choisit</strong> pas le nouveau mot de passe : le serveur en <strong>génère</strong> un temporaire, le hache, et le renvoie <strong>une seule fois</strong> pour que le gestionnaire le communique au technicien.</p>
+<pre class="hljs"><code>app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/api/users/:id/reset-password&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> temporaryPassword = <span class="hljs-title function_">generateTemporaryPassword</span>()        <span class="hljs-comment">// ex: &quot;Temp-9f3a1c2b&quot;</span>
+  <span class="hljs-keyword">const</span> hashed = <span class="hljs-keyword">await</span> bcrypt.<span class="hljs-title function_">hash</span>(temporaryPassword, <span class="hljs-number">10</span>)
+  <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE users SET mot_de_passe = $1 WHERE id = $2&#x27;</span>, [hashed, userId])
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, temporaryPassword })        <span class="hljs-comment">// affiché une fois, jamais re-stocké en clair</span>
+})
+</code></pre>
+<blockquote>
+<p>🔐 <strong>Pourquoi cette séparation ?</strong> Le gestionnaire administre les comptes mais ne doit pas connaître les mots de passe permanents des techniciens. La réinitialisation donne un accès temporaire ; le technicien le change ensuite lui-même (route <code>PUT /api/technicien/password</code>).</p>
+</blockquote>
+<h2 id="5-2-le-catalogue-de-materiaux-materiaux-crud-complet">5.2 Le catalogue de matériaux — <code>materiaux</code> (CRUD complet)</h2>
+<p>C'est l'exemple <strong>type</strong> d'un module CRUD. Les 5 routes sont toutes en <code>requireRole(GESTIONNAIRE)</code>, donc un technicien reçoit automatiquement <code>403</code>.</p>
+<h3 id="lister-rechercher-get-api-materiaux-search-actif">Lister + rechercher — <code>GET /api/materiaux?search=...&amp;actif=...</code></h3>
+<pre class="hljs"><code>app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/api/materiaux&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> filters = []; <span class="hljs-keyword">const</span> params = []
+
+  <span class="hljs-keyword">const</span> search = (req.<span class="hljs-property">query</span>.<span class="hljs-property">search</span> || <span class="hljs-string">&#x27;&#x27;</span>).<span class="hljs-title function_">trim</span>()
+  <span class="hljs-keyword">if</span> (search) {
+    params.<span class="hljs-title function_">push</span>(<span class="hljs-string">`%<span class="hljs-subst">${search}</span>%`</span>)
+    filters.<span class="hljs-title function_">push</span>(<span class="hljs-string">`(m.nom ILIKE $<span class="hljs-subst">${params.length}</span> OR m.reference ILIKE $<span class="hljs-subst">${params.length}</span> OR m.categorie ILIKE $<span class="hljs-subst">${params.length}</span>)`</span>)
+  }
+  <span class="hljs-keyword">const</span> actif = <span class="hljs-title function_">parseActiveFilter</span>(req.<span class="hljs-property">query</span>.<span class="hljs-property">actif</span>)
+  <span class="hljs-keyword">if</span> (actif !== <span class="hljs-literal">null</span>) { params.<span class="hljs-title function_">push</span>(actif); filters.<span class="hljs-title function_">push</span>(<span class="hljs-string">`m.actif = $<span class="hljs-subst">${params.length}</span>`</span>) }
+
+  <span class="hljs-keyword">const</span> whereClause = filters.<span class="hljs-property">length</span> ? <span class="hljs-string">`WHERE <span class="hljs-subst">${filters.join(<span class="hljs-string">&#x27; AND &#x27;</span>)}</span>`</span> : <span class="hljs-string">&#x27;&#x27;</span>
+  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">`SELECT m.* FROM materiaux m <span class="hljs-subst">${whereClause}</span> ORDER BY m.nom ASC`</span>, params)
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">count</span>: result.<span class="hljs-property">rows</span>.<span class="hljs-property">length</span>, <span class="hljs-attr">materiaux</span>: result.<span class="hljs-property">rows</span>.<span class="hljs-title function_">map</span>(formatMaterialRow) })
+})
+</code></pre>
+<p><code>ILIKE</code> = recherche insensible à la casse ; <code>%term%</code> = « contient ». La recherche couvre le nom, la référence et la catégorie.</p>
+<h3 id="creer-post-api-materiaux">Créer — <code>POST /api/materiaux</code></h3>
+<pre class="hljs"><code>app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/api/materiaux&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> nom = (req.<span class="hljs-property">body</span>.<span class="hljs-property">nom</span> || <span class="hljs-string">&#x27;&#x27;</span>).<span class="hljs-title function_">trim</span>()
+  <span class="hljs-keyword">if</span> (!nom) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Le nom du matériau est obligatoire&#x27;</span> })
+
+  <span class="hljs-comment">// référence unique : on vérifie avant d&#x27;insérer</span>
+  <span class="hljs-keyword">if</span> (reference) {
+    <span class="hljs-keyword">const</span> dup = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT id FROM materiaux WHERE reference = $1 LIMIT 1&#x27;</span>, [reference])
+    <span class="hljs-keyword">if</span> (dup.<span class="hljs-property">rows</span>.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">409</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Cette référence existe déjà&#x27;</span> })
+  }
+
+  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(
+    <span class="hljs-string">`INSERT INTO materiaux (reference, nom, description, categorie, quantite_stock, unite, prix_unitaire, actif)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`</span>,
+    [reference, nom, description, categorie, quantiteStock, unite, prixUnitaire, actif],
+  )
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">201</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">materiau</span>: <span class="hljs-title function_">formatMaterialRow</span>(result.<span class="hljs-property">rows</span>[<span class="hljs-number">0</span>]) })
+})
+</code></pre>
+<h3 id="modifier-supprimer-put-id-et-delete-id">Modifier / Supprimer — <code>PUT /:id</code> et <code>DELETE /:id</code></h3>
+<p><code>PUT</code> relit d'abord la ligne existante, fusionne les nouvelles valeurs (chaque champ absent garde sa valeur actuelle), met à jour <code>updated_at = NOW()</code>. <code>DELETE</code> supprime réellement la ligne :</p>
+<pre class="hljs"><code>app.<span class="hljs-title function_">delete</span>(<span class="hljs-string">&#x27;/api/materiaux/:id&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;DELETE FROM materiaux WHERE id = $1 RETURNING id&#x27;</span>, [id])
+  <span class="hljs-keyword">if</span> (!result.<span class="hljs-property">rows</span>.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">404</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Matériau introuvable&#x27;</span> })
+  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Matériau supprimé&#x27;</span> })
+})
+</code></pre>
+<blockquote>
+<p>💡 <strong>CRUD = Create, Read, Update, Delete.</strong> Chaque module du gestionnaire (users, projets, materiaux, interventions) suit exactement ce squelette : <code>GET</code> (liste), <code>GET /:id</code> (détail), <code>POST</code> (créer), <code>PUT /:id</code> (modifier), <code>DELETE /:id</code> (supprimer). Une fois que tu en as compris un, tu les comprends tous.</p>
+</blockquote>
+<h2 id="5-3-le-planning-interventions-avec-gestion-multi-jours">5.3 Le planning — <code>interventions</code> (avec gestion multi-jours)</h2>
+<h3 id="lister-une-semaine-get-api-interventions-semaine-yyyy-mm-dd">Lister une semaine — <code>GET /api/interventions?semaine=YYYY-MM-DD</code></h3>
+<p>Le planning affiche une semaine. Comme une intervention peut <strong>durer plusieurs jours</strong>, on ne sélectionne pas seulement celles qui <em>commencent</em> dans la semaine, mais toutes celles qui la <strong>chevauchent</strong>.</p>
+<pre class="hljs"><code><span class="hljs-comment">// Une intervention chevauche [début, fin] si :</span>
+<span class="hljs-comment">//   date_depart &lt;= fin  ET  date_fin (= date_retour) &gt;= début</span>
+params.<span class="hljs-title function_">push</span>(startDate.<span class="hljs-title function_">toISOString</span>()); <span class="hljs-keyword">const</span> startParam = params.<span class="hljs-property">length</span>
+params.<span class="hljs-title function_">push</span>(endDate.<span class="hljs-title function_">toISOString</span>());   <span class="hljs-keyword">const</span> endParam   = params.<span class="hljs-property">length</span>
+filters.<span class="hljs-title function_">push</span>(
+  <span class="hljs-string">`i.date_depart &lt; ($<span class="hljs-subst">${endParam}</span>::timestamptz + interval &#x27;1 day&#x27;)
+   AND COALESCE(i.date_retour, i.date_depart) &gt;= $<span class="hljs-subst">${startParam}</span>`</span>,
+)
+</code></pre>
+<p><code>COALESCE(i.date_retour, i.date_depart)</code> = « prends <code>date_retour</code>, ou à défaut <code>date_depart</code> » : cela gère les anciennes interventions qui n'avaient pas de date de fin. La requête joint aussi le technicien (nom, prénom, email) pour l'affichage.</p>
+<h3 id="creer-une-intervention-post-api-interventions">Créer une intervention — <code>POST /api/interventions</code></h3>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> dateDepart = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(req.<span class="hljs-property">body</span>.<span class="hljs-property">date_depart</span> ?? req.<span class="hljs-property">body</span>.<span class="hljs-property">date_debut</span>)
+<span class="hljs-keyword">let</span> dateRetour = dateDepart                      <span class="hljs-comment">// par défaut : 1 seule journée</span>
+<span class="hljs-keyword">if</span> (req.<span class="hljs-property">body</span>.<span class="hljs-property">date_fin</span>) {
+  <span class="hljs-keyword">const</span> parsed = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(req.<span class="hljs-property">body</span>.<span class="hljs-property">date_fin</span>)
+  <span class="hljs-keyword">if</span> (parsed &lt; dateDepart) {
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;La date de fin doit être postérieure ou égale au début&#x27;</span> })
+  }
+  dateRetour = parsed
+}
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(
+  <span class="hljs-string">`INSERT INTO interventions (technicien_id, titre, description, lieu_depart, lieu_arrivee, date_depart, date_retour, statut)
+   VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`</span>,
+  [techId, titre, description, lieuDepart, lieuArrivee, dateDepart.<span class="hljs-title function_">toISOString</span>(), dateRetour.<span class="hljs-title function_">toISOString</span>(), statut],
+)
+</code></pre>
+<p><code>PUT /api/interventions/:id</code> met à jour les mêmes champs via <code>COALESCE($n, colonne)</code> (ne change que ce qui est fourni). C'est ce que le <strong>glisser-déposer</strong> appelle pour réaffecter une intervention à un autre technicien ou un autre jour.</p>
+<h2 id="5-4-la-validation-des-rapports-put-api-rapports-id-valider">5.4 La validation des rapports — <code>PUT /api/rapports/:id/valider</code></h2>
+<p>Le gestionnaire valide ou rejette un rapport d'intervention. La décision (<code>VALIDE</code>/<code>REJETE</code>), le validateur (<code>req.auth.user.id</code>) et la date sont enregistrés.</p>
+<pre class="hljs"><code>app.<span class="hljs-title function_">put</span>(<span class="hljs-string">&#x27;/api/rapports/:id/valider&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> decision = <span class="hljs-title function_">parseReportDecision</span>(req.<span class="hljs-property">body</span>.<span class="hljs-property">decision</span>)        <span class="hljs-comment">// &#x27;VALIDE&#x27; ou &#x27;REJETE&#x27;</span>
+  <span class="hljs-keyword">if</span> (!decision) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Décision invalide&#x27;</span> })
+
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">runTransaction</span>(<span class="hljs-title function_">async</span> (client) =&gt; {
+    <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">query</span>(
+      <span class="hljs-string">`UPDATE rapports
+       SET statut = $1, validate_par = $2, date_validation = NOW(), commentaire_validation = $3
+       WHERE id = $4 RETURNING id`</span>,
+      [decision, req.<span class="hljs-property">auth</span>.<span class="hljs-property">user</span>.<span class="hljs-property">id</span>, commentaire, reportId],
+    )
+  })
+  <span class="hljs-comment">// ... puis on relit le rapport enrichi (technicien, intervention, validateur) et on le renvoie</span>
+})
+</code></pre>
+<p><code>GET /api/rapports/stats</code> renvoie simplement trois compteurs (<code>enAttente</code>, <code>valides</code>, <code>rejetes</code>) calculés par trois <code>COUNT(*)</code>.</p>
+<h2 id="5-5-le-tableau-de-bord-get-api-manager-dashboard">5.5 Le tableau de bord — <code>GET /api/manager/dashboard</code></h2>
+<p>Cette route agrège <strong>tout</strong> ce qu'affiche la page d'accueil : compteurs + dernières activités. Astuce de performance : toutes les requêtes sont lancées <strong>en parallèle</strong> avec <code>Promise.all</code>.</p>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> [techCount, intervCount, expenseCount, pendingCount, validatedCount, recentInterv, recentExp] =
+  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([
+    pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">`SELECT COUNT(*)::int AS count FROM techniciens t JOIN users u ON u.id=t.user_id WHERE u.actif=true`</span>),
+    pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT COUNT(*)::int AS count FROM interventions&#x27;</span>),
+    pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT COUNT(*)::int AS count FROM frais_deplacement&#x27;</span>),
+    pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT COUNT(*)::int AS count FROM frais_deplacement WHERE statut_validation = $1&#x27;</span>, [<span class="hljs-string">&#x27;EN_ATTENTE&#x27;</span>]),
+    pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT COUNT(*)::int AS count FROM frais_deplacement WHERE statut_validation = $1&#x27;</span>, [<span class="hljs-string">&#x27;VALIDEE&#x27;</span>]),
+    pool.<span class="hljs-title function_">query</span>(<span class="hljs-comment">/* 5 dernières interventions + nom technicien */</span>),
+    pool.<span class="hljs-title function_">query</span>(<span class="hljs-comment">/* 5 dernières notes de frais + mission + technicien */</span>),
+  ])
+<span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ manager, <span class="hljs-attr">stats</span>: { <span class="hljs-comment">/* ... */</span> }, recentInterventions, recentExpenses })
+</code></pre>
+<h2 id="5-6-le-circuit-des-notes-de-frais-expenses">5.6 Le circuit des notes de frais — <code>expenses</code></h2>
+<p>C'est un <strong>workflow</strong> en trois états :</p>
+<pre class="hljs"><code>EN_ATTENTE ──(gestionnaire valide)──▶ VALIDEE ──(gestionnaire paie)──▶ PAYEE
+</code></pre>
+<h3 id="lister-get-api-manager-expenses-status-en-attente">Lister — <code>GET /api/manager/expenses?status=EN_ATTENTE</code></h3>
+<p>Renvoie les frais filtrés par statut, enrichis de la mission (<code>i.titre AS mission</code>), du technicien et de la dernière décision. C'est la même requête qui sert à la page « Validation » (<code>status=EN_ATTENTE</code>) et à la page « Paiements » (<code>status=VALIDEE</code>).</p>
+<h3 id="valider-patch-api-manager-expenses-id-validate">Valider — <code>PATCH /api/manager/expenses/:id/validate</code></h3>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> updatedId = <span class="hljs-keyword">await</span> <span class="hljs-title function_">runTransaction</span>(<span class="hljs-title function_">async</span> (client) =&gt; {
+  <span class="hljs-comment">// On ne valide QUE si le frais est encore &quot;EN_ATTENTE&quot; (évite la double validation)</span>
+  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">query</span>(
+    <span class="hljs-string">`UPDATE frais_deplacement SET statut_validation = $1
+     WHERE id = $2 AND statut_validation = $3 RETURNING id`</span>,
+    [<span class="hljs-variable constant_">EXPENSE_STATUS_VALIDATED</span>, expenseId, <span class="hljs-variable constant_">EXPENSE_STATUS_PENDING</span>],
+  )
+  <span class="hljs-keyword">if</span> (!result.<span class="hljs-property">rows</span>[<span class="hljs-number">0</span>]) <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
+  <span class="hljs-comment">// Trace dans le journal d&#x27;audit</span>
+  <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">query</span>(
+    <span class="hljs-string">`INSERT INTO validations (frais_id, gestionnaire_id, decision, commentaire) VALUES ($1,$2,$3,$4)`</span>,
+    [expenseId, manager.<span class="hljs-property">manager_id</span>, <span class="hljs-variable constant_">EXPENSE_STATUS_VALIDATED</span>, commentaire],
+  )
+  <span class="hljs-keyword">return</span> result.<span class="hljs-property">rows</span>[<span class="hljs-number">0</span>].<span class="hljs-property">id</span>
+})
+<span class="hljs-keyword">if</span> (!updatedId) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">404</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Frais introuvable ou déjà traité&#x27;</span> })
+</code></pre>
+<h3 id="payer-en-lot-patch-api-manager-expenses-pay">Payer en lot — <code>PATCH /api/manager/expenses/pay</code></h3>
+<p>Le gestionnaire coche plusieurs frais validés et les rembourse en une fois. On passe un <strong>tableau d'ids</strong>.</p>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> expenseIds = ids.<span class="hljs-title function_">map</span>(parseInteger).<span class="hljs-title function_">filter</span>(<span class="hljs-title class_">Boolean</span>)
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(
+  <span class="hljs-string">`UPDATE frais_deplacement SET statut_validation = $1 WHERE id = ANY($2::int[]) RETURNING id`</span>,
+  [<span class="hljs-variable constant_">EXPENSE_STATUS_PAID</span>, expenseIds],     <span class="hljs-comment">// ANY($2::int[]) = &quot;id parmi cette liste&quot;</span>
+)
+<span class="hljs-comment">// Une ligne d&#x27;audit par frais payé</span>
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(
+  <span class="hljs-string">`INSERT INTO validations (frais_id, gestionnaire_id, decision, commentaire)
+   SELECT f.id, $1, $2, $3 FROM frais_deplacement f WHERE f.id = ANY($4::int[])`</span>,
+  [manager.<span class="hljs-property">manager_id</span>, <span class="hljs-variable constant_">EXPENSE_STATUS_PAID</span>, reference ? <span class="hljs-string">`Paiement... Reference: <span class="hljs-subst">${reference}</span>`</span> : <span class="hljs-string">&#x27;Paiement effectue&#x27;</span>, expenseIds],
+)
+</code></pre>
+<p><code>id = ANY($2::int[])</code> est l'équivalent SQL de « id ∈ {liste} » : pratique pour agir sur plusieurs lignes d'un coup.</p>
+<hr>
+<h1 id="6-le-frontend-fondations">6. Le frontend : fondations</h1>
+<p>Avant les pages, comprenons les 4 briques qui les font fonctionner.</p>
+<h2 id="6-1-le-client-api-lib-api-ts">6.1 Le client API — <code>lib/api.ts</code></h2>
+<p>Toutes les requêtes passent par <strong>une seule fonction</strong> <code>apiFetch</code>. Elle ajoute le jeton, sérialise le corps en JSON, et transforme les erreurs HTTP en exceptions.</p>
+<pre class="hljs"><code><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> apiFetch&lt;T&gt;(path, options = {}): <span class="hljs-title class_">Promise</span>&lt;T&gt; {
+  <span class="hljs-keyword">const</span> headers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Headers</span>(options.<span class="hljs-property">headers</span>)
+  <span class="hljs-keyword">if</span> (options.<span class="hljs-property">token</span>) headers.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;Authorization&#x27;</span>, <span class="hljs-string">`Bearer <span class="hljs-subst">${options.token}</span>`</span>)   <span class="hljs-comment">// ← le jeton</span>
+
+  <span class="hljs-keyword">let</span> body = options.<span class="hljs-property">body</span>
+  <span class="hljs-keyword">if</span> (body &amp;&amp; <span class="hljs-keyword">typeof</span> body === <span class="hljs-string">&#x27;object&#x27;</span> &amp;&amp; !(body <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">FormData</span>)) {
+    headers.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;Content-Type&#x27;</span>, <span class="hljs-string">&#x27;application/json&#x27;</span>)
+    body = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(body)
+  }
+
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${API_BASE_URL}</span><span class="hljs-subst">${path}</span>`</span>, { ...options, headers, body })
+  <span class="hljs-keyword">const</span> data = <span class="hljs-comment">/* json si content-type json, sinon texte */</span>
+
+  <span class="hljs-keyword">if</span> (!response.<span class="hljs-property">ok</span>) {                       <span class="hljs-comment">// 4xx / 5xx → on lève une ApiError</span>
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(data?.<span class="hljs-property">error</span> || data?.<span class="hljs-property">message</span> || <span class="hljs-string">&#x27;Erreur API&#x27;</span>, response.<span class="hljs-property">status</span>)
+  }
+  <span class="hljs-keyword">return</span> data <span class="hljs-keyword">as</span> T
+}
+</code></pre>
+<p>Avantage : chaque composant écrit <code>await apiFetch('/api/...', { token })</code> sans répéter la logique d'en-têtes, de JSON et d'erreurs.</p>
+<h2 id="6-2-le-routeur-routes-approutes-tsx">6.2 Le routeur — <code>routes/appRoutes.tsx</code></h2>
+<p>Le routeur déclare les URLs. Les pages du gestionnaire sont <strong>regroupées</strong> sous la garde <code>RequireManagerAuth</code> : impossible d'y accéder sans jeton.</p>
+<pre class="hljs"><code><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> router = <span class="hljs-title function_">createBrowserRouter</span>([
+  { <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">Root</span>, <span class="hljs-attr">children</span>: [
+    { <span class="hljs-attr">index</span>: <span class="hljs-literal">true</span>, <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">LandingPage</span> },
+
+    { <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;gestionnaire/login&#x27;</span>, <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">ManagerLogin</span> },   <span class="hljs-comment">// public</span>
+    {
+      <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">RequireManagerAuth</span>,                            <span class="hljs-comment">// ← garde commune</span>
+      <span class="hljs-attr">children</span>: [
+        { <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;gestionnaire/dashboard&#x27;</span>,  <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">ManagerDashboard</span> },
+        { <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;gestionnaire/ressources&#x27;</span>, <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">ManagerResources</span> },
+        { <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;gestionnaire/materiaux&#x27;</span>,  <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">ManagerMaterials</span> },
+        { <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;gestionnaire/planning&#x27;</span>,   <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">ManagerPlanning</span> },
+        { <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;gestionnaire/validation&#x27;</span>, <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">ManagerValidation</span> },
+        { <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;gestionnaire/paiements&#x27;</span>,  <span class="hljs-title class_">Component</span>: <span class="hljs-title class_">ManagerPayments</span> },
+      ],
+    },
+  ]},
+])
+</code></pre>
+<h2 id="6-3-la-session-managersession-ts">6.3 La session — <code>managerSession.ts</code></h2>
+<p>Déjà vue au §3.4 : <code>setManagerSession</code> / <code>getManagerToken</code> / <code>clearManagerSession</code>. C'est le seul endroit qui connaît la clé <code>'managerToken'</code>.</p>
+<h2 id="6-4-le-gabarit-visuel-managerlayout-tsx">6.4 Le gabarit visuel — <code>ManagerLayout.tsx</code></h2>
+<p>Toutes les pages du gestionnaire sont enveloppées dans ce composant qui affiche la <strong>barre latérale</strong> (navigation) et le bouton de déconnexion. La page réelle est passée en <code>children</code>.</p>
+<pre class="hljs"><code><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">ManagerLayout</span>(<span class="hljs-params">{ children }</span>) {
+  <span class="hljs-keyword">const</span> navigation = [
+    { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Tableau de bord&#x27;</span>, <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/gestionnaire/dashboard&#x27;</span>, <span class="hljs-attr">icon</span>: <span class="hljs-title class_">LayoutDashboard</span> },
+    { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Ressources&#x27;</span>,      <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/gestionnaire/ressources&#x27;</span>, <span class="hljs-attr">icon</span>: <span class="hljs-title class_">Users</span> },
+    { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Matériaux&#x27;</span>,       <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/gestionnaire/materiaux&#x27;</span>,  <span class="hljs-attr">icon</span>: <span class="hljs-title class_">Package</span> },
+    { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Planning Hebdo&#x27;</span>,  <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/gestionnaire/planning&#x27;</span>,   <span class="hljs-attr">icon</span>: <span class="hljs-title class_">Calendar</span> },
+    { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Validation&#x27;</span>,      <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/gestionnaire/validation&#x27;</span>, <span class="hljs-attr">icon</span>: <span class="hljs-title class_">CheckSquare</span> },
+    { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Paiements&#x27;</span>,       <span class="hljs-attr">path</span>: <span class="hljs-string">&#x27;/gestionnaire/paiements&#x27;</span>,  <span class="hljs-attr">icon</span>: <span class="hljs-title class_">CreditCard</span> },
+  ]
+  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleLogout</span> = (<span class="hljs-params"></span>) =&gt; { <span class="hljs-title function_">clearManagerSession</span>(); <span class="hljs-title function_">navigate</span>(<span class="hljs-string">&#x27;/gestionnaire/login&#x27;</span>, { <span class="hljs-attr">replace</span>: <span class="hljs-literal">true</span> }) }
+  <span class="hljs-keyword">return</span> (
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex h-screen&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">aside</span>&gt;</span> {/* logo + navigation.map(...) + bouton Déconnexion */} <span class="hljs-tag">&lt;/<span class="hljs-name">aside</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex-1 overflow-auto&quot;</span>&gt;</span>{children}<span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  )
+}
+</code></pre>
+<hr>
+<h1 id="7-le-frontend-les-pages-du-gestionnaire">7. Le frontend : les pages du gestionnaire</h1>
+<p>Toutes les pages suivent le <strong>même cycle de vie</strong> : un état local (<code>useState</code>), un chargement de données au montage (<code>useEffect</code> + <code>apiFetch</code>), un rendu conditionnel (chargement / vide / liste), et des actions (créer, modifier…) qui rappellent l'API puis rechargent.</p>
+<h2 id="7-1-la-connexion-managerlogin-tsx">7.1 La connexion — <code>ManagerLogin.tsx</code></h2>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> <span class="hljs-title function_">handleLogin</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">e</span>) =&gt; {
+  e.<span class="hljs-title function_">preventDefault</span>()
+  <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> apiFetch&lt;{ <span class="hljs-attr">token</span>: <span class="hljs-built_in">string</span> }&gt;(<span class="hljs-string">&#x27;/login/gestionnaire&#x27;</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
+    <span class="hljs-attr">body</span>: { email, <span class="hljs-attr">mot_de_passe</span>: password },
+  })
+  <span class="hljs-title function_">setManagerSession</span>(data.<span class="hljs-property">token</span>)                       <span class="hljs-comment">// on range le jeton</span>
+  <span class="hljs-title function_">navigate</span>(<span class="hljs-string">&#x27;/gestionnaire/dashboard&#x27;</span>, { <span class="hljs-attr">replace</span>: <span class="hljs-literal">true</span> })   <span class="hljs-comment">// on entre dans l&#x27;espace</span>
+}
+</code></pre>
+<h2 id="7-2-le-tableau-de-bord-managerdashboard-tsx">7.2 Le tableau de bord — <code>ManagerDashboard.tsx</code></h2>
+<p>Au montage, il appelle <code>/api/manager/dashboard</code> et affiche 4 cartes de statistiques + deux listes (activité récente, dernières notes de frais).</p>
+<pre class="hljs"><code><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">const</span> token = <span class="hljs-title function_">getManagerToken</span>()
+  apiFetch&lt;<span class="hljs-title class_">DashboardData</span>&gt;(<span class="hljs-string">&#x27;/api/manager/dashboard&#x27;</span>, { token })
+    .<span class="hljs-title function_">then</span>(setData).<span class="hljs-title function_">catch</span>(<span class="hljs-function">() =&gt;</span> {}).<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">setIsLoading</span>(<span class="hljs-literal">false</span>))
+}, [])
+</code></pre>
+<p>Le motif <code>isLoading ? &quot;Chargement...&quot; : &lt;contenu&gt;</code> évite d'afficher une page vide pendant l'attente réseau.</p>
+<h2 id="7-3-les-ressources-managerresources-tsx">7.3 Les ressources — <code>ManagerResources.tsx</code></h2>
+<p>Page à <strong>onglets</strong> (Radix <code>Tabs</code>) : « Techniciens » et « Projets ». Chacun a son CRUD (ajout/édition/suppression via des modales <code>Dialog</code>).</p>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> <span class="hljs-title function_">loadResources</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">const</span> token = <span class="hljs-title function_">getManagerToken</span>()
+  <span class="hljs-keyword">const</span> [techData, projData] = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([
+    apiFetch&lt;{ <span class="hljs-attr">users</span>: <span class="hljs-title class_">TechnicianRow</span>[] }&gt;(<span class="hljs-string">&#x27;/api/users?role=TECHNICIEN&amp;actif=true&#x27;</span>, { token }),
+    apiFetch&lt;{ <span class="hljs-attr">projets</span>: <span class="hljs-title class_">ProjectRow</span>[] }&gt;(<span class="hljs-string">&#x27;/api/projets&#x27;</span>, { token }),
+  ])
+  <span class="hljs-title function_">setTechnicians</span>(techData.<span class="hljs-property">users</span>); <span class="hljs-title function_">setProjects</span>(projData.<span class="hljs-property">projets</span>)
+}
+</code></pre>
+<p>C'est ici qu'on applique la <strong>règle des mots de passe</strong> côté interface : la modale d'édition d'un technicien <strong>ne propose plus</strong> de champ « mot de passe ». À la place, un bouton « Réinitialiser le mot de passe » :</p>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> <span class="hljs-title function_">handleResetPassword</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> apiFetch&lt;{ <span class="hljs-attr">temporaryPassword</span>: <span class="hljs-built_in">string</span> }&gt;(
+    <span class="hljs-string">`/api/users/<span class="hljs-subst">${editingTech.id}</span>/reset-password`</span>, { <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>, token },
+  )
+  <span class="hljs-title function_">setTemporaryPassword</span>(res.<span class="hljs-property">temporaryPassword</span>)    <span class="hljs-comment">// affiché dans un encadré, à recopier</span>
+}
+</code></pre>
+<h2 id="7-4-les-materiaux-managermaterials-tsx">7.4 Les matériaux — <code>ManagerMaterials.tsx</code></h2>
+<p>CRUD complet du catalogue : un tableau, un champ de recherche (avec <em>debounce</em>), une modale d'ajout/édition, une suppression confirmée.</p>
+<pre class="hljs"><code><span class="hljs-comment">// Recherche &quot;anti-rafale&quot; : on attend 250ms après la dernière frappe avant d&#x27;appeler l&#x27;API.</span>
+<span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">const</span> timer = <span class="hljs-built_in">setTimeout</span>(loadMaterials, <span class="hljs-number">250</span>)
+  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearTimeout</span>(timer)
+}, [search])
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handleSave</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">const</span> payload = { reference, nom, categorie, quantite_stock, unite, prix_unitaire }
+  <span class="hljs-keyword">if</span> (editingId) <span class="hljs-keyword">await</span> <span class="hljs-title function_">apiFetch</span>(<span class="hljs-string">`/api/materiaux/<span class="hljs-subst">${editingId}</span>`</span>, { <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;PUT&#x27;</span>,  token, <span class="hljs-attr">body</span>: payload })
+  <span class="hljs-keyword">else</span>           <span class="hljs-keyword">await</span> <span class="hljs-title function_">apiFetch</span>(<span class="hljs-string">&#x27;/api/materiaux&#x27;</span>,            { <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>, token, <span class="hljs-attr">body</span>: payload })
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">loadMaterials</span>()      <span class="hljs-comment">// on recharge la liste pour refléter le changement</span>
+}
+</code></pre>
+<p>Le <em>debounce</em> est un réflexe à connaître : sans lui, on enverrait une requête à chaque lettre tapée.</p>
+<h2 id="7-5-le-planning-managerplanningdragdrop-tsx">7.5 Le planning — <code>ManagerPlanningDragDrop.tsx</code></h2>
+<p>La page la plus riche. Elle affiche une <strong>grille</strong> (lignes = techniciens, colonnes = jours de la semaine) et permet de <strong>glisser-déposer</strong> une intervention pour la réaffecter. Elle gère aussi les interventions sur <strong>plusieurs jours</strong>.</p>
+<p><strong>a) Affichage multi-jours.</strong> Une intervention apparaît sur <strong>chaque</strong> jour qu'elle couvre, grâce à un helper :</p>
+<pre class="hljs"><code><span class="hljs-keyword">function</span> <span class="hljs-title function_">interventionCoversDay</span>(<span class="hljs-params">intervention, dayKey</span>) {
+  <span class="hljs-keyword">const</span> startKey = <span class="hljs-title function_">toDateKey</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(intervention.<span class="hljs-property">dateDepart</span>))
+  <span class="hljs-keyword">const</span> endKey   = intervention.<span class="hljs-property">dateRetour</span> ? <span class="hljs-title function_">toDateKey</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(intervention.<span class="hljs-property">dateRetour</span>)) : startKey
+  <span class="hljs-keyword">return</span> dayKey &gt;= startKey &amp;&amp; dayKey &lt;= endKey   <span class="hljs-comment">// le jour est-il entre début et fin ?</span>
+}
+</code></pre>
+<p>La carte affiche un badge « Jour 2/4 » et un style pointillé sur les jours de continuation.</p>
+<p><strong>b) Glisser-déposer</strong> (react-dnd). La carte est « draggable », la cellule est une « drop zone ». Au dépôt, on appelle <code>PUT /api/interventions/:id</code> en <strong>conservant la durée</strong> (on décale début ET fin du même nombre de jours) :</p>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> durationDays = <span class="hljs-title function_">dayDiff</span>(<span class="hljs-title function_">toDateKey</span>(currentStart), <span class="hljs-title function_">toDateKey</span>(currentEnd))
+<span class="hljs-keyword">const</span> newStart = <span class="hljs-title function_">mergeDateWithTime</span>(targetDate, currentStart)
+<span class="hljs-keyword">const</span> newEnd   = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(newStart); newEnd.<span class="hljs-title function_">setDate</span>(newEnd.<span class="hljs-title function_">getDate</span>() + durationDays)
+
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">apiFetch</span>(<span class="hljs-string">`/api/interventions/<span class="hljs-subst">${id}</span>`</span>, {
+  <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;PUT&#x27;</span>, token,
+  <span class="hljs-attr">body</span>: { <span class="hljs-attr">technicien_id</span>: targetTechnicianId, <span class="hljs-attr">date_depart</span>: newStart.<span class="hljs-title function_">toISOString</span>(), <span class="hljs-attr">date_fin</span>: newEnd.<span class="hljs-title function_">toISOString</span>() },
+})
+</code></pre>
+<p><strong>c) Filtrage par semaine.</strong> Des boutons « semaine précédente/suivante » changent un état <code>weekStart</code>, ce qui relance le chargement via <code>useEffect([weekStart, ...])</code>.</p>
+<h2 id="7-6-la-validation-managervalidation-tsx">7.6 La validation — <code>ManagerValidation.tsx</code></h2>
+<p>Deux onglets : « Rapports d'intervention » et « Notes de frais ». Pour les frais, le gestionnaire voit le <strong>justificatif</strong> et peut valider :</p>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> <span class="hljs-title function_">handleValidateExpense</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">expenseId</span>) =&gt; {
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">apiFetch</span>(<span class="hljs-string">`/api/manager/expenses/<span class="hljs-subst">${expenseId}</span>/validate`</span>, { <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;PATCH&#x27;</span>, token })
+  <span class="hljs-title function_">setExpenses</span>(<span class="hljs-function">(<span class="hljs-params">cur</span>) =&gt;</span> cur.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> e.<span class="hljs-property">id</span> !== expenseId))   <span class="hljs-comment">// disparaît de la liste &quot;en attente&quot;</span>
+}
+</code></pre>
+<p>Le lien vers le justificatif est construit à partir de <code>API_BASE_URL</code> + le chemin stocké en base :</p>
+<pre class="hljs"><code>&lt;a href={<span class="hljs-string">`<span class="hljs-subst">${API_BASE_URL}</span><span class="hljs-subst">${expense.justificatifUrl}</span>`</span>} target=<span class="hljs-string">&quot;_blank&quot;</span> rel=<span class="hljs-string">&quot;noreferrer&quot;</span>&gt;
+  <span class="hljs-title class_">Voir</span> le justificatif
+&lt;/a&gt;
+</code></pre>
+<h2 id="7-7-les-paiements-managerpayments-tsx">7.7 Les paiements — <code>ManagerPayments.tsx</code></h2>
+<p>Liste les frais <strong>validés</strong> (<code>status=VALIDEE</code>), avec des cases à cocher. Le gestionnaire sélectionne plusieurs lignes, voit le total se calculer en direct, puis confirme le remboursement en lot :</p>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> totalSelected = selectedIds.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">sum, id</span>) =&gt;</span>
+  sum + (expenses.<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> e.<span class="hljs-property">id</span> === id)?.<span class="hljs-property">amount</span> ?? <span class="hljs-number">0</span>), <span class="hljs-number">0</span>)
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handleConfirmPayment</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">apiFetch</span>(<span class="hljs-string">&#x27;/api/manager/expenses/pay&#x27;</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;PATCH&#x27;</span>, token,
+    <span class="hljs-attr">body</span>: { <span class="hljs-attr">ids</span>: selectedIds, <span class="hljs-attr">reference</span>: paymentData.<span class="hljs-property">reference</span> || <span class="hljs-literal">null</span> },
+  })
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">loadExpenses</span>()    <span class="hljs-comment">// les frais payés quittent la liste &quot;à payer&quot;</span>
+}
+</code></pre>
+<hr>
+<h1 id="8-trois-scenarios-de-bout-en-bout">8. Trois scénarios de bout en bout</h1>
+<h2 id="8-1-creer-un-technicien">8.1 Créer un technicien</h2>
+<ol>
+<li><strong>UI</strong> : « Ressources » → onglet Techniciens → « Ajouter » → formulaire.</li>
+<li><strong>Front</strong> : <code>apiFetch('/api/users', { method:'POST', token, body:{ nom, email, password, role:'TECHNICIEN' } })</code>.</li>
+<li><strong>Back</strong> : <code>requireRole(GESTIONNAIRE)</code> → hachage bcrypt → transaction <code>INSERT users</code> + <code>INSERT techniciens</code> → <code>201</code>.</li>
+<li><strong>Front</strong> : <code>loadResources()</code> recharge la liste, le nouveau technicien apparaît.</li>
+</ol>
+<h2 id="8-2-planifier-une-intervention-sur-3-jours">8.2 Planifier une intervention sur 3 jours</h2>
+<ol>
+<li><strong>UI</strong> : « Planning » → clic sur une cellule → date de début + date de fin (3 jours plus tard).</li>
+<li><strong>Front</strong> : <code>apiFetch('/api/interventions', { method:'POST', body:{ ..., date_depart, date_fin } })</code>.</li>
+<li><strong>Back</strong> : validation <code>date_fin &gt;= date_depart</code> → <code>INSERT</code> avec <code>date_retour</code> → <code>201</code>.</li>
+<li><strong>Front</strong> : la carte s'affiche sur les 3 colonnes (badges « Jour 1/3 », « Jour 2/3 », « Jour 3/3 »).</li>
+</ol>
+<h2 id="8-3-valider-puis-payer-une-note-de-frais">8.3 Valider puis payer une note de frais</h2>
+<ol>
+<li>Le technicien crée une note de frais (mission + justificatif) → statut <code>EN_ATTENTE</code>.</li>
+<li><strong>Validation</strong> : le gestionnaire ouvre « Validation », voit le justificatif, clique « Valider » → <code>PATCH /validate</code> → statut <code>VALIDEE</code> + ligne d'audit.</li>
+<li><strong>Paiement</strong> : « Paiements » liste les <code>VALIDEE</code> ; il coche, confirme → <code>PATCH /pay</code> → statut <code>PAYEE</code> + audit.</li>
+</ol>
+<hr>
+<h1 id="9-les-patterns-a-reutiliser-pour-coder-toi-meme">9. Les patterns à réutiliser pour coder toi-même</h1>
+<h2 id="9-1-le-squelette-d-une-route-backend-protegee">9.1 Le squelette d'une route backend protégée</h2>
+<pre class="hljs"><code>app.<span class="hljs-title function_">METHODE</span>(<span class="hljs-string">&#x27;/api/ressource/:id?&#x27;</span>, <span class="hljs-title function_">requireRole</span>(<span class="hljs-variable constant_">ROLE_GESTIONNAIRE</span>), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-comment">// 1. Lire &amp; valider les entrées (req.params, req.query, req.body)</span>
+    <span class="hljs-comment">// 2. (option) Vérifier les droits/cohérence métier</span>
+    <span class="hljs-comment">// 3. Exécuter la/les requête(s) SQL paramétrée(s) — transaction si plusieurs tables</span>
+    <span class="hljs-comment">// 4. Répondre avec le bon code (200/201/...) et des données formatées</span>
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">/* ... */</span> })
+  } <span class="hljs-keyword">catch</span> (error) {
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">500</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: error.<span class="hljs-property">message</span> })   <span class="hljs-comment">// 5. Filet de sécurité</span>
+  }
+})
+</code></pre>
+<h2 id="9-2-le-squelette-d-une-page-react-gestionnaire">9.2 Le squelette d'une page React (gestionnaire)</h2>
+<pre class="hljs"><code><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">MaPage</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">const</span> [items, setItems] = <span class="hljs-title function_">useState</span>([])
+  <span class="hljs-keyword">const</span> [isLoading, setIsLoading] = <span class="hljs-title function_">useState</span>(<span class="hljs-literal">true</span>)
+
+  <span class="hljs-keyword">const</span> <span class="hljs-title function_">load</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+    <span class="hljs-keyword">const</span> token = <span class="hljs-title function_">getManagerToken</span>()
+    <span class="hljs-keyword">try</span> { <span class="hljs-title function_">setItems</span>((<span class="hljs-keyword">await</span> <span class="hljs-title function_">apiFetch</span>(<span class="hljs-string">&#x27;/api/ressource&#x27;</span>, { token })).<span class="hljs-property">items</span>) }
+    <span class="hljs-keyword">catch</span> (e) { toast.<span class="hljs-title function_">error</span>(e.<span class="hljs-property">message</span>) }
+    <span class="hljs-keyword">finally</span> { <span class="hljs-title function_">setIsLoading</span>(<span class="hljs-literal">false</span>) }
+  }
+  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> { <span class="hljs-title function_">load</span>() }, [])
+
+  <span class="hljs-keyword">const</span> <span class="hljs-title function_">save</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">payload, id?</span>) =&gt; {
+    <span class="hljs-keyword">if</span> (id) <span class="hljs-keyword">await</span> <span class="hljs-title function_">apiFetch</span>(<span class="hljs-string">`/api/ressource/<span class="hljs-subst">${id}</span>`</span>, { <span class="hljs-attr">method</span>:<span class="hljs-string">&#x27;PUT&#x27;</span>,  token, <span class="hljs-attr">body</span>: payload })
+    <span class="hljs-keyword">else</span>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">apiFetch</span>(<span class="hljs-string">&#x27;/api/ressource&#x27;</span>,       { <span class="hljs-attr">method</span>:<span class="hljs-string">&#x27;POST&#x27;</span>, token, <span class="hljs-attr">body</span>: payload })
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">load</span>()    <span class="hljs-comment">// recharger pour refléter l&#x27;état réel du serveur</span>
+  }
+
+  <span class="hljs-keyword">return</span> (
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ManagerLayout</span>&gt;</span>
+      {isLoading ? <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Chargement...<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span> : /* tableau + modales */ null}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">ManagerLayout</span>&gt;</span></span>
+  )
+}
+</code></pre>
+<h2 id="9-3-la-check-list-mentale">9.3 La check-list mentale</h2>
+<ul>
+<li>[ ] <strong>Sécurité d'abord</strong> : toute route privée commence par <code>requireRole(...)</code>. Le frontend ne sécurise rien.</li>
+<li>[ ] <strong>Requêtes paramétrées</strong> (<code>$1</code>, <code>$2</code>) — jamais de concaténation de valeurs utilisateur.</li>
+<li>[ ] <strong>Codes HTTP justes</strong> : 200 (ok), 201 (créé), 400 (entrée invalide), 401 (non connecté), 403 (interdit), 404 (introuvable), 409 (conflit), 500 (erreur serveur).</li>
+<li>[ ] <strong>Formate</strong> les lignes SQL (<code>snake_case</code> → <code>camelCase</code>) avant de les renvoyer.</li>
+<li>[ ] <strong>Recharge</strong> la liste après une action (<code>load()</code>), plutôt que de bidouiller l'état local.</li>
+<li>[ ] <strong><code>useEffect</code></strong> pour charger au montage ; <strong><code>useState</code></strong> pour l'état ; <strong><code>toast</code></strong> pour les retours.</li>
+<li>[ ] <strong>Redémarre <code>npm run api</code></strong> après toute modification de <code>server.js</code>.</li>
+</ul>
+<hr>
+<blockquote>
+<p><strong>Fin du document.</strong> Tu disposes maintenant d'une vue complète de l'espace gestionnaire : la base de données, chaque route API avec ses règles de sécurité, et chaque page React avec son cycle de vie. En suivant les patterns du §9, tu peux ajouter toi-même un nouveau module (par exemple un catalogue de « fournisseurs ») en quelques heures.</p>
+</blockquote>
+
+</body>
+</html>
