@@ -28,7 +28,7 @@ export default function ManagerLogin() {
         method: 'POST',
         body: {
           email,
-          mot_de_passe: password,
+          password,
         },
       })
 
